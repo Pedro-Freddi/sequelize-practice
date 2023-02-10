@@ -1,4 +1,9 @@
+"use strict";
+
 require("dotenv").config();
+require("./config/database.js");
+require("./models/index.js");
+
 const express = require("express");
 
 const app = express();
