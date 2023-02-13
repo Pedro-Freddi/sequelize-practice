@@ -1,9 +1,9 @@
-const { Customer } = require("../models/index.js");
+const { Customer, Order } = require("../models/index.js");
 
 class CustomerController {
   static async getAll(req, res, next) {
     try {
-      const customers = await Customer.findAll();
+      const customers = await Customer.findAll({ include: Order });
       return res.json({ customers });
     } catch (error) {
       next(error);
@@ -13,7 +13,7 @@ class CustomerController {
   static async getById(req, res, next) {
     try {
       const { id } = req.params;
-      const customer = await Customer.findByPk(id);
+      const customer = await Customer.findByPk(id, { include: Order });
       if (!customer) {
         return res
           .status(404)
@@ -86,7 +86,7 @@ class CustomerController {
           .status(404)
           .json({ message: "Can't find a customer with that ID." });
       }
-      const deletedCustomer = await customer.destroy();
+      await customer.destroy();
       return res
         .status(200)
         .json({ message: "Customer deleted successfully." });
