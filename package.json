@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "db:restore": "yarn sequelize-cli db:drop && yarn sequelize-cli db:create && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all",
     "db:create": "yarn sequelize-cli db:create",
     "db:drop": "yarn sequelize-cli db:drop",
     "db:migrate": "yarn sequelize-cli db:migrate",
-    "db:seed:all": "yarn sequelize-cli db:seed:all"
+    "db:migrate:undo:all": "yarn sequelize-cli db:migrate:undo:all",
+    "db:seed:all": "yarn sequelize-cli db:seed:all",
+    "db:seed:undo:all": "yarn sequelize-cli db:seed:undo:all"
   },
   "author": "",
   "license": "MIT",

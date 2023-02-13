@@ -2,41 +2,37 @@
 
 module.exports = {
   up: async (queryInterface, { DataTypes }) => {
-    await queryInterface.createTable("orders", {
+    await queryInterface.createTable("orders_items", {
       id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
-      customer_id: {
+      order_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "customers",
-          key: "id",
+          model: "orders",
+          key: "id"
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
       },
-      shipping_address_id: {
+      product_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "shipping_addresses",
-          key: "id",
+          model: "products",
+          key: "id"
         },
         onUpdate: "CASCADE",
-        onDelete: "CASCADE"
+        onDelete: "RESTRICT"
       },
-      total: {
-        type: DataTypes.DOUBLE,
+      quantity: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
-      status: {
-        type: DataTypes.ENUM("pending", "confirmed", "shipped", "cancelled"),
-        allowNull: false,
-        defaultValue: "pending",
+        defaultValue: 1
       },
       created_at: {
         type: DataTypes.DATE,
@@ -48,10 +44,17 @@ module.exports = {
         allowNull: false,
         defaultValue: DataTypes.NOW
       }
+    },
+    {
+      uniqueKeys: {
+        order_items_unique: {
+          fields: [ "order_id", "product_id" ]
+        }
+      }
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("orders");
+    await queryInterface.dropTable("orders_items");
   },
 };

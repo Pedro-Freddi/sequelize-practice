@@ -5,18 +5,13 @@ module.exports = (sequelize, { Model, DataTypes }) => {
    *  Model class definition
    */
 
-  class Order extends Model {
+  class OrderItem extends Model {
     static associate(models) {
-      Order.belongsTo(models.Customer, {
+      OrderItem.belongsTo(models.Product, {
         onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onDelete: "RESTRICT",
       });
-      Order.belongsTo(models.ShippingAddress, {
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      });
-      Order.belongsToMany(models.Product, { through: models.OrderItem });
-      Order.hasMany(models.OrderItem, {
+      OrderItem.belongsTo(models.Order, {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       });
@@ -27,7 +22,7 @@ module.exports = (sequelize, { Model, DataTypes }) => {
    *  Model initialization
    */
 
-  Order.init(
+  OrderItem.init(
     {
       // Model attributes are defined here
       id: {
@@ -36,32 +31,32 @@ module.exports = (sequelize, { Model, DataTypes }) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      customerId: {
+      orderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: "compositeIndex",
         references: {
-          // Can reference the model directly or the table name
-          model: "customers",
+          model: "orders",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
-      shippingAddressId: {
+      productId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: "compositeIndex",
         references: {
-          // Can reference the model directly or the table name
-          model: "shipping_addresses",
+          model: "products",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
       },
-      total: {
-        type: DataTypes.DOUBLE,
+      quantity: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
-      status: {
-        type: DataTypes.ENUM("pending", "confirmed", "shipped", "cancelled"),
-        allowNull: false,
-        defaultValue: "pending",
+        defaultValue: 1,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -76,13 +71,13 @@ module.exports = (sequelize, { Model, DataTypes }) => {
       // Other model options are defined here
       // Pass the sequelize instance
       sequelize,
-      modelName: "Order",
+      modelName: "OrderItem",
       // Table name can be specified through the tableName property
-      tableName: "orders",
+      tableName: "orders_items",
       // Map fields from camelCase to underscored syntax in database tables
       underscored: true,
     }
   );
 
-  return Order;
+  return OrderItem;
 };

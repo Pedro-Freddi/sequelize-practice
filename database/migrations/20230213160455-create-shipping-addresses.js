@@ -1,39 +1,39 @@
 "use strict";
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface, { DataTypes }) => {
     await queryInterface.createTable("shipping_addresses", {
       id: {
-        type: Sequelize.DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
       address: {
-        type: Sequelize.DataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       city: {
-        type: Sequelize.DataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       postal_code: {
-        type: Sequelize.DataTypes.STRING(20),
+        type: DataTypes.STRING(20),
         allowNull: false
       },
       country: {
-        type: Sequelize.DataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       created_at: {
-        type: Sequelize.DataTypes.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: Sequelize.DataTypes.NOW,
+        defaultValue: DataTypes.NOW,
       },
       updated_at: {
-        type: Sequelize.DataTypes.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: Sequelize.DataTypes.NOW
+        defaultValue: DataTypes.NOW
       }
     });
   },

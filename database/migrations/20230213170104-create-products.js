@@ -2,34 +2,36 @@
 
 module.exports = {
   up: async (queryInterface, { DataTypes }) => {
-    await queryInterface.createTable("customers", {
+    await queryInterface.createTable("products", {
       id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
-      email: {
+      name: {
         type: DataTypes.STRING(255),
         allowNull: false,
         unique: true,
       },
-      password: {
+      display_name: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      first_name: {
+      sku: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      last_name: {
-        type: DataTypes.STRING,
-      },
-      birth_date: {
-        type: DataTypes.DATEONLY,
+      price: {
+        type: DataTypes.DOUBLE,
         allowNull: false,
       },
-      phone: DataTypes.STRING(13),
+      description: DataTypes.TEXT,
+      in_stock: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -38,12 +40,12 @@ module.exports = {
       updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW
-      }
+        defaultValue: DataTypes.NOW,
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("customers");
+    await queryInterface.dropTable("products");
   },
 };
