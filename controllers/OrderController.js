@@ -1,9 +1,16 @@
-const { Order, ShippingAddress, OrderItem, sequelize } = require("../models/index.js");
+const {
+  Order,
+  ShippingAddress,
+  OrderItem,
+  sequelize,
+} = require("../models/index.js");
 
 class OrderController {
   static async getAll(req, res, next) {
     try {
-      const orders = await Order.findAll({ include: [ShippingAddress, OrderItem] });
+      const orders = await Order.findAll({
+        include: [ShippingAddress, OrderItem],
+      });
       return res.json({ orders });
     } catch (error) {
       next(error);
@@ -13,7 +20,9 @@ class OrderController {
   static async getById(req, res, next) {
     try {
       const { id } = req.params;
-      const order = await Order.findByPk(id, { include: [ShippingAddress, OrderItem] });
+      const order = await Order.findByPk(id, {
+        include: [ShippingAddress, OrderItem],
+      });
       if (!order) {
         return res
           .status(404)
@@ -27,22 +36,48 @@ class OrderController {
 
   static async create(req, res, next) {
     try {
-      const { customerId, total, status, address, city, postalCode, country } =
-        req.body;
+      const {
+        customerId,
+        total,
+        status,
+        address,
+        city,
+        postalCode,
+        country,
+        orderItems,
+      } = req.body;
       const t = await sequelize.transaction();
       try {
-        const shippingAddress = await ShippingAddress.create({
-          address,
-          city,
-          postalCode,
-          country,
-        });
-        const order = await Order.create({
-          customerId,
-          shippingAddressId: shippingAddress.dataValues.id,
-          total,
-          status,
-        });
+        const shippingAddress = await ShippingAddress.create(
+          {
+            address,
+            city,
+            postalCode,
+            country,
+          },
+          { transaction: t }
+        );
+        const order = await Order.create(
+          {
+            customerId,
+            shippingAddressId: shippingAddress.dataValues.id,
+            total,
+            status,
+          },
+          { transaction: t }
+        );
+        await Promise.all(
+          orderItems.map(async (orderItem) => {
+            await OrderItem.create(
+              {
+                orderId: order.dataValues.id,
+                productId: orderItem.productId,
+                quantity: orderItem.quantity,
+              },
+              { transaction: t }
+            );
+          })
+        );
         await t.commit();
         const newOrder = await Order.findByPk(order.dataValues.id, {
           include: [ShippingAddress, OrderItem],
@@ -75,13 +110,13 @@ class OrderController {
         await order.update({
           total,
           status,
-        });
+        }, { transaction: t });
         await shippingAddress.update({
           address,
           city,
           country,
           postalCode,
-        });
+        }, { transaction: t });
         await t.commit();
         const updatedOrder = await Order.findByPk(order.dataValues.id, {
           include: [ShippingAddress, OrderItem],
