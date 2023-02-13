@@ -2,13 +2,16 @@
 
 require("dotenv").config();
 require("./models/index.js");
-
 const express = require("express");
+const apiRouter = require("./routes/index.js");
 
 const app = express();
 
-app.get("/", (req, res, next) => {
-    res.send("Hello World");
+app.use(express.json());
+app.use("/api", apiRouter);
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ message: err.message });
 });
 
 app.listen(process.env.PORT, () => {

@@ -7,8 +7,12 @@ module.exports = (sequelize, { Model, DataTypes }) => {
 
   class Product extends Model {
     static associate(models) {
-      Product.belongsToMany(models.Order, { through: models.OrderItem });
+      Product.belongsToMany(models.Order, {
+        foreignKey: "orderId",
+        through: models.OrderItem,
+      });
       Product.hasMany(models.OrderItem, {
+        foreignKey: "productId",
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       });
@@ -37,7 +41,7 @@ module.exports = (sequelize, { Model, DataTypes }) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      SKU: {
+      sku: {
         type: DataTypes.STRING,
         allowNull: false,
       },

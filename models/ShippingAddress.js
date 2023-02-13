@@ -8,6 +8,7 @@ module.exports = (sequelize, { Model, DataTypes }) => {
   class ShippingAddress extends Model {
     static associate(models) {
       ShippingAddress.hasMany(models.Order, {
+        foreignKey: "shippingAddressId",
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
       });

@@ -8,15 +8,21 @@ module.exports = (sequelize, { Model, DataTypes }) => {
   class Order extends Model {
     static associate(models) {
       Order.belongsTo(models.Customer, {
+        foreignKey: "customerId",
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       });
       Order.belongsTo(models.ShippingAddress, {
+        foreignKey: "shippingAddressId",
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       });
-      Order.belongsToMany(models.Product, { through: models.OrderItem });
+      Order.belongsToMany(models.Product, {
+        foreignKey: "productId",
+        through: models.OrderItem,
+      });
       Order.hasMany(models.OrderItem, {
+        foreignKey: "orderId",
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       });

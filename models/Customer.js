@@ -11,13 +11,13 @@
  */
 
 module.exports = (sequelize, { Model, DataTypes }) => {
-  
   class Customer extends Model {
     // We can create class methods
     static associate(models) {
       Customer.hasMany(models.Order, {
+        foreignKey: "customerId",
         onUpdate: "CASCADE",
-        onDelete: "CASCADE"
+        onDelete: "CASCADE",
       });
     }
 
@@ -69,16 +69,16 @@ module.exports = (sequelize, { Model, DataTypes }) => {
       lastName: DataTypes.STRING,
       birthDate: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
       },
       phone: DataTypes.STRING(13),
       createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
       },
     },
     {
@@ -93,6 +93,5 @@ module.exports = (sequelize, { Model, DataTypes }) => {
     }
   );
 
-    return Customer;
-
+  return Customer;
 };
