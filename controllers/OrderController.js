@@ -82,7 +82,7 @@ class OrderController {
         const newOrder = await Order.findByPk(order.dataValues.id, {
           include: [ShippingAddress, OrderItem],
         });
-        return res.status(201).json({ newOrder });
+        return res.status(201).json({ order: newOrder });
       } catch (error) {
         await t.rollback();
         return next(error);
